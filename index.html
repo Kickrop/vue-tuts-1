@@ -18,9 +18,16 @@
         <p>{{ sayHello() }} <a :href="link">Google</a></p>
         <hr>
         <p v-html="finishedLink"></p>
-        <button v-on:click="increase">click it</button>
+        <button v-on:click="increase(2, $event)">click it</button>
+        <button v-on:click="counter--">click it</button>
+        <p>Result: {{ output }}</p>
         <p>{{ counter }}</p>
-        <p v-on:mousemove="updateCoordinates">Coordinates: {{ x }} / {{ y }}</p>
+        <p v-on:mousemove="updateCoordinates">Coordinates: {{ x }} / {{ y }} - 
+            <span v-on:mousemove.stop>DEAD SPOT</span>
+        </p>
+        <input type="text" v-on:keyup.enter.space="alterMe">
+        <p>{{ name }}</p>
+        <input type="text" v-model="name">
     </div>
 </body>
 <script>
@@ -32,19 +39,36 @@ new Vue({
         finishedLink: '<a href="http://google.com">google</a>',
         counter: 0,
         x: 0,
-        y: 0
+        y: 0,
+        name: 'Max'
+    },
+    computed: {
+        output: function() {
+            return this.counter > 5 ? 'Greater 5' : 'Smaller 5';
+        }
+    },
+    watch: {
+        counter: function(value) {
+            var vm = this;
+            setTimeout(function(){
+                vm.counter = 0;
+            }, 2000);
+        }
     },
     methods: {
         sayHello: function() {
             this.title = 'hello!'
             return this.title;
         },
-        increase: function() {
-            this.counter++;
+        increase: function(step, event) {
+            this.counter += step;
         },
         updateCoordinates: function(event) {
             this.x = event.clientX;
             this.y = event.clientY;
+        },
+        alterMe: function() {
+            alert('Alert!');
         }
          
     }
